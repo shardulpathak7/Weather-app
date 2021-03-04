@@ -1,12 +1,15 @@
 import styled from 'styled-components';
 import { Icon } from './Weather';
 import sun from '../assets/sun.svg';
+import rain from '../assets/rain.svg';
+import cloudy from '../assets/cloudy.svg';
 import LineChart from './LineChart';
 
 const Container = styled.div`
 	margin: 30px auto;
 	border-radius: 6px;
-	box-shadow: 0px 0px 5px 0px rgba(48, 46, 48, 0.75);
+	margin-bottom: 100px;
+	box-shadow: 0 0 8px 0px rgba(0, 0, 0, 0.3);
 `;
 const Temp = styled.div`
 	display: flex;
@@ -37,25 +40,32 @@ const AttrContainer = styled.div`
 	display: flex;
 	justify-content: center;
 `;
-const Weather = () => {
+const WeatherDetail = (props) => {
+	const { collection } = props;
 	return (
 		<Container>
 			<Temp>
-				<H1>26c&deg;</H1>
-				<Icon detail src={sun} />
+				<H1>{`${Math.round(collection.temp)}`}&deg;C</H1>
+				{collection.currweather == 'Clear' ? (
+					<Icon detail src={sun} />
+				) : collection.currweather == 'Clouds' ? (
+					<Icon detail src={cloudy} />
+				) : (
+					<Icon detail src={rain} />
+				)}
 			</Temp>
-			<LineChart />
+			<LineChart collection={collection} />
 			<AttrContainer>
 				<TextContainer>
 					<Text>Pressure</Text>
-					<Data>1013 hpa</Data>
+					<Data>{`${collection.pressure} hpa`}</Data>
 				</TextContainer>
 				<TextContainer>
 					<Text>Humidity</Text>
-					<Data>93 %</Data>
+					<Data>{`${collection.humidity} %`}</Data>
 				</TextContainer>
 			</AttrContainer>
 		</Container>
 	);
 };
-export default Weather;
+export default WeatherDetail;

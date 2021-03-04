@@ -1,8 +1,11 @@
 import styled from 'styled-components';
 import { Line } from 'react-chartjs-2';
+
+//** Take a look how you made a chart scrollable in a block
+
 const Container = styled.div`
-	height: 20vh;
-	width: 400px;
+	height: 22vh;
+	width: 2700px;
 	margin-bottom: 10px;
 `;
 const Chart = styled(Line)`
@@ -15,35 +18,55 @@ const Main = styled.div`
 	}
 	overflow-x: scroll;
 `;
-const LineChart = () => {
-	const data = {
-		labels: [
-			['21°', '10am'],
-			['21°', '10am'],
-			['21°', '10am'],
-			['21°', '10am'],
-			['21°', '10am'],
-			['21°', '10am'],
-			['21°', '10am'],
-			['21°', '10am'],
-		],
-		backgroundColor: ['black', 'grey'],
-		datasets: [
-			{
-				data: [21, 0, 3, 3, 3, 3],
-				fill: false,
-				backgroundColor: 'rgba(0,0,0,0)',
-				pointBackgroundColor: 'rgba(250,250,250)',
-				pointHoverBackgroundColor: 'rgba(250,250,250)',
-				borderColor: 'rgb(6, 154, 212)',
-				pointHoverBorderWidth: 1.8,
-				borderWidth: 1.8,
-				pointHoverRadius: 4,
-				pointRadius: 4,
-			},
-		],
+const LineChart = (props) => {
+	const data = (canvas) => {
+		// const ctx = canvas.getContext('2d');
+		// var width = window.innerWidth || document.body.clientWidth;
+
+		// const gradient = ctx.createLinearGradient(0, 0, width, 170);
+		// gradient.addColorStop(0, 'rgba(223, 245, 253,.9)');
+		// // gradient.addColorStop(0.45, 'white');
+		// gradient.addColorStop(1, 'white');
+		// ctx.fillStyle = gradient;
+		// // ctx.fillRect(20, 20, 150, 100);
+
+		// // ctx.fillStyle = gradient;
+		// // ctx.fillRect(20, 20, 10, 10);
+		// // gradient.addColorStop(0.4, 'rgb(255, 255, 255)');
+		// // gradient.addColorStop(0.4, 'rgb(255, 255, 255)');
+		return {
+			labels: props.collection.labels,
+			datasets: [
+				{
+					data: props.collection.newData,
+					fill: false,
+					// backgroundColor: gradient,
+					pointBackgroundColor: 'rgba(250,250,250)',
+					pointHoverBackgroundColor: 'rgba(250,250,250)',
+					borderColor: '#069ad4',
+					pointHoverBorderWidth: 1.8,
+					borderWidth: 1.8,
+					pointHoverRadius: 4,
+					pointRadius: 4,
+				},
+			],
+		};
 	};
 	const options = {
+		responsive: true,
+		layout: {
+			padding: {
+				bottom: 10,
+			},
+		},
+		plugins: [
+			{
+				afterDraw: (chart) => {
+					var ctx = chart.chart.ctx;
+					console.log(ctx);
+				},
+			},
+		],
 		maintainAspectRatio: false,
 		legend: {
 			display: false,
@@ -69,9 +92,10 @@ const LineChart = () => {
 						color: 'rgba(0,0,0,.3)',
 					},
 					ticks: {
-						fontColor: 'black',
-						fontSize: 15,
-						padding: 10,
+						// fontColor: 'black',
+						// fontSize: 15,
+						// padding: 5,
+						display: false,
 					},
 					scaleLabel: {
 						fontColor: 'rgb(0,0,0)',
