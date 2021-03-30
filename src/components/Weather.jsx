@@ -68,12 +68,12 @@ const Weather = (props) => {
 				</span>
 			</Temp>
 			<>
-				{weather[0].main == 'Clear' ? (
+				{weather[0].main === 'Clear' ? (
 					<Condition>
 						<Icon src={sun} />
 						Sunny
 					</Condition>
-				) : weather[0].main == 'Clouds' ? (
+				) : weather[0].main === 'Clouds' ? (
 					<Condition>
 						<Icon src={cloudy} />
 						Cloudy

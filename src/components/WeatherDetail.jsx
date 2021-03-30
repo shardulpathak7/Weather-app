@@ -7,6 +7,7 @@ import LineChart from './LineChart';
 
 const Container = styled.div`
 	margin: 30px auto;
+	width: 95vw;
 	border-radius: 6px;
 	margin-bottom: 100px;
 	box-shadow: 0 0 8px 0px rgba(0, 0, 0, 0.3);
@@ -46,9 +47,9 @@ const WeatherDetail = (props) => {
 		<Container>
 			<Temp>
 				<H1>{`${Math.round(collection.temp)}`}&deg;C</H1>
-				{collection.currweather == 'Clear' ? (
+				{collection.currweather === 'Clear' ? (
 					<Icon detail src={sun} />
-				) : collection.currweather == 'Clouds' ? (
+				) : collection.currweather === 'Clouds' ? (
 					<Icon detail src={cloudy} />
 				) : (
 					<Icon detail src={rain} />

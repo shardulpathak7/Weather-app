@@ -1,9 +1,13 @@
 import styled from 'styled-components';
-import Header from './components/Header';
+import WeatherApp from './components/Header';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { getSunrise, getSunset } from 'sunrise-sunset-js';
-//create content loader for the app
+import ContentLoader from './components/ContentLoader';
+//create content loader for the app ✅
+//making label
+//daychart
+//different view for desktop
+
 const Container = styled.div`
 	width: 96vw;
 `;
@@ -16,8 +20,9 @@ export const fetchWeatherData = async (lat, lon) => {
 	const result = await axios.get(
 		`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=metric&appid=85109aa0ef476baab799fb40d3adfdfd`
 	);
-	const risetime = new Date(getSunrise(lat, lon));
-	const settime = new Date(getSunset(lat, lon));
+	// const risetime = new Date(getSunrise(lat, lon));
+	// const settime = new Date(getSunset(lat, lon));
+	// console.log(risetime + ' ' + settime);
 	const {
 		hourly,
 		daily,
@@ -42,6 +47,8 @@ export const fetchWeatherData = async (lat, lon) => {
 		temp,
 		currweather,
 		daily,
+		lat,
+		lon,
 	};
 	return collection;
 };
@@ -70,7 +77,7 @@ function App() {
 		<Container>
 			{collection ? (
 				<>
-					<Header collection={collection} />
+					<WeatherApp collection={collection} />
 				</>
 			) : error ? (
 				<>
@@ -78,7 +85,7 @@ function App() {
 					<Error>To give you location specific weather data</Error>
 				</>
 			) : (
-				<div>loading</div>
+				<ContentLoader />
 			)}
 		</Container>
 	);

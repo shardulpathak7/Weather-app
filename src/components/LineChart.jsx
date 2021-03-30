@@ -20,27 +20,12 @@ const Main = styled.div`
 `;
 const LineChart = (props) => {
 	const data = (canvas) => {
-		// const ctx = canvas.getContext('2d');
-		// var width = window.innerWidth || document.body.clientWidth;
-
-		// const gradient = ctx.createLinearGradient(0, 0, width, 170);
-		// gradient.addColorStop(0, 'rgba(223, 245, 253,.9)');
-		// // gradient.addColorStop(0.45, 'white');
-		// gradient.addColorStop(1, 'white');
-		// ctx.fillStyle = gradient;
-		// // ctx.fillRect(20, 20, 150, 100);
-
-		// // ctx.fillStyle = gradient;
-		// // ctx.fillRect(20, 20, 10, 10);
-		// // gradient.addColorStop(0.4, 'rgb(255, 255, 255)');
-		// // gradient.addColorStop(0.4, 'rgb(255, 255, 255)');
 		return {
 			labels: props.collection.labels,
 			datasets: [
 				{
 					data: props.collection.newData,
 					fill: false,
-					// backgroundColor: gradient,
 					pointBackgroundColor: 'rgba(250,250,250)',
 					pointHoverBackgroundColor: 'rgba(250,250,250)',
 					borderColor: '#069ad4',

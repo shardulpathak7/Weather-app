@@ -15,11 +15,6 @@ import rain from '../assets/rain.svg';
 const Container = styled.div`
 	position: relative;
 `;
-const Error = styled.div`
-	color: grey;
-	text-align: center;
-	font-size: 20px;
-`;
 const Input = styled.input`
 	border: none;
 	outline-color: #48aeed;
@@ -93,6 +88,7 @@ const Header = (props) => {
 				const placeData = data.map((place, index) => {
 					return { ...place, ...arr[index] };
 				});
+				setFocused(true);
 				setPlaces(placeData);
 			},
 			400,
@@ -101,18 +97,19 @@ const Header = (props) => {
 	).current;
 	const handleChange = async (e) => {
 		const str = e.target.value;
-		if (str.length > 2) {
+		if (location.length > 2) {
 			fetchData(str);
 		}
 		setLocation(str);
 	};
 	const handleFocus = () => {
-		setFocused(true);
+		if (location.length > 2) setFocused(true);
 	};
 	const handleMouseOut = (e) => {
 		setFocused(false);
 	};
 	const handleClick = async (lat, lon) => {
+		setLocation('');
 		const response = await fetchWeatherData(lat, lon);
 		setCollection(response);
 	};
@@ -143,11 +140,11 @@ const Header = (props) => {
 									</Text>
 									<NewContainer>
 										<Temp>{Math.round(place.temp)}&deg;C </Temp>
-										{place.currweather == 'Clear' ? (
+										{place.currweather === 'Clear' ? (
 											<Condition>
 												<Icon header src={sun} />
 											</Condition>
-										) : place.currweather == 'Clouds' ? (
+										) : place.currweather === 'Clouds' ? (
 											<Condition>
 												<Icon style={{ paddingBottom: 4 }} header src={cloudy} />
 											</Condition>
@@ -164,7 +161,7 @@ const Header = (props) => {
 			</Container>
 			<WeeklyWeather daily={collection.daily} />
 			<WeatherDetail collection={collection} />
-			<DayChart />
+			<DayChart lat={collection.lat} lon={collection.lon} />
 		</>
 	);
 };
