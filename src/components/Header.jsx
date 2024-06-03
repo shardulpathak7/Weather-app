@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import location from '../assets/location.svg';
 import search from '../assets/search.svg';
@@ -20,8 +20,8 @@ const Input = styled.input`
 	outline-color: #48aeed;
 	outline-width: 0.01px;
 	box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.27);
-	background: url(${location}) no-repeat 3px 9px / 30px 30px,
-		url(${search}) no-repeat 99% 4.5px / 40px 40px;
+	background: url(${ location }) no-repeat 3px 9px / 30px 30px,
+		url(${ search }) no-repeat 99% 4.5px / 40px 40px;
 	border-radius: 6px;
 	padding: 0 33px;
 	width: 90vw;
@@ -66,102 +66,101 @@ const NewContainer = styled.div`
 	justify-content: space-evenly;
 	align-items: center;
 `;
-const Header = (props) => {
-	const [location, setLocation] = useState('');
-	const [places, setPlaces] = useState([]);
-	const [focused, setFocused] = useState(false);
-	const [collection, setCollection] = useState(props.collection);
-	const fetchData = useRef(
-		debounce(
-			async (str) => {
-				const response = await axios.get(
-					`https://api.locationiq.com/v1/autocomplete.php?key=pk.64b469c52b2232a772736db94445d2f3&q=${str}&limit=5`
-				);
-				const { data } = response;
-				//** 🚀 🚀 🚀 learnt & implemented promise.all
-				const arr = await Promise.all(
-					data.map(async ({ lon, lat }) => {
-						const { temp, currweather } = await fetchWeatherData(lat, lon);
-						return { temp, currweather };
-					})
-				);
-				const placeData = data.map((place, index) => {
-					return { ...place, ...arr[index] };
-				});
-				setFocused(true);
-				setPlaces(placeData);
-			},
-			400,
-			{ leading: true }
-		)
-	).current;
-	const handleChange = async (e) => {
+const Header = ( props ) => {
+	const [ location, setLocation ] = useState( '' );
+	const [ places, setPlaces ] = useState( [] );
+	const [ focused, setFocused ] = useState( false );
+	const [ collection, setCollection ] = useState( props.collection );
+	const fetchLocationWiseData = async ( str ) => {
+		const response = await axios.get(
+			`https://api.locationiq.com/v1/autocomplete.php?key=pk.64b469c52b2232a772736db94445d2f3&q=${ str }&limit=5`
+		);
+		const { data } = response;
+		//** 🚀 🚀 🚀 learnt & implemented promise.all
+		const arr = await Promise.all(
+			data.map( async ( { lon, lat } ) => {
+				const { temp, currweather } = await fetchWeatherData( lat, lon );
+				return { temp, currweather };
+			} )
+		);
+		const placeData = data.map( ( place, index ) => {
+			return { ...place, ...arr[ index ] };
+		} );
+		setFocused( true );
+		setPlaces( placeData );
+	}
+
+	const fetchData = useMemo( () => debounce(
+		fetchLocationWiseData,
+		600,
+	), [] )
+	const handleChange = async ( e ) => {
 		const str = e.target.value;
-		if (location.length > 2) {
-			fetchData(str);
+		if ( str.length > 2 ) {
+			fetchData( str );
 		}
-		setLocation(str);
+		setLocation( str );
 	};
 	const handleFocus = () => {
-		if (location.length > 2) setFocused(true);
+		if ( location.length > 2 ) setFocused( true );
 	};
-	const handleMouseOut = (e) => {
-		setFocused(false);
+	const handleMouseOut = ( e ) => {
+		setFocused( false );
 	};
-	const handleClick = async (lat, lon) => {
-		setLocation('');
-		const response = await fetchWeatherData(lat, lon);
-		setCollection(response);
+	const handleClick = async ( lat, lon ) => {
+		setLocation( '' );
+		const response = await fetchWeatherData( lat, lon );
+		setCollection( response );
 	};
-	const newRef = useRef(null);
+	const newRef = useRef( null );
 	//** used 🕛 settimeout 👇 so that onMouseOut event wiil fire after click event on li  */
 	return (
 		<>
-			<Container ref={newRef}>
+			<Container ref={ newRef }>
 				<Input
-					onBlur={() => {
-						setTimeout(handleMouseOut, 300);
-					}}
-					onFocus={handleFocus}
+					onBlur={ () => {
+						setTimeout( handleMouseOut, 300 );
+					} }
+					onFocus={ handleFocus }
 					type='text'
-					value={location}
-					onChange={handleChange}
+					value={ location }
+					onChange={ handleChange }
 				/>
-				{location.length > 2 &&
+				{ location.length > 2 &&
 					places &&
 					places.length > 0 &&
-					(focused ? (
+					( focused ? (
 						<Ul>
-							{places.map((place, index) => (
-								<Li key={index} onClick={() => handleClick(place.lat, place.lon)}>
+							{ places.map( ( place, index ) => (
+								<Li key={ index } onClick={ () => handleClick( place.lat, place.lon ) }>
 									<Text>
-										{`${place.address.name}`}
-										{place.address.state && `, ${place.address.state}  `}
+										{ `${ place.address.name }` }
+										{ place.address.state && `, ${ place.address.state }  ` }
 									</Text>
 									<NewContainer>
-										<Temp>{Math.round(place.temp)}&deg;C </Temp>
-										{place.currweather === 'Clear' ? (
+										<Temp>{ Math.round( place.temp ) }&deg;C </Temp>
+										{ place.currweather === 'Clear' ? (
 											<Condition>
-												<Icon header src={sun} />
+												<Icon header src={ sun } />
 											</Condition>
 										) : place.currweather === 'Clouds' ? (
 											<Condition>
-												<Icon style={{ paddingBottom: 4 }} header src={cloudy} />
+												<Icon style={ { paddingBottom: 4 } } header src={ cloudy } />
 											</Condition>
 										) : (
 											<Condition>
-												<Icon header src={rain} />
+												<Icon header src={ rain } />
 											</Condition>
-										)}
+										) }
 									</NewContainer>
 								</Li>
-							))}
+							) ) }
 						</Ul>
-					) : null)}
+					) : null ) }
 			</Container>
-			<WeeklyWeather daily={collection.daily} />
-			<WeatherDetail collection={collection} />
-			<DayChart lat={collection.lat} lon={collection.lon} />
+			<WeeklyWeather daily={ collection.daily } />
+			<WeatherDetail collection={ collection } />
+			<DayChart lat={ collection.lat } lon={ collection.lon } />
 		</>
 	);
 };
