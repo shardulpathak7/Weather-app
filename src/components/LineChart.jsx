@@ -8,7 +8,7 @@ const Container = styled.div`
 	width: 2700px;
 	margin-bottom: 10px;
 `;
-const Chart = styled(Line)`
+const Chart = styled( Line )`
 	position: absolute;
 `;
 const Main = styled.div`
@@ -18,8 +18,8 @@ const Main = styled.div`
 	}
 	overflow-x: scroll;
 `;
-const LineChart = (props) => {
-	const data = (canvas) => {
+const LineChart = ( props ) => {
+	const data = () => {
 		return {
 			labels: props.collection.labels,
 			datasets: [
@@ -39,16 +39,11 @@ const LineChart = (props) => {
 	};
 	const options = {
 		responsive: true,
-		layout: {
-			padding: {
-				bottom: 10,
-			},
-		},
 		plugins: [
 			{
-				afterDraw: (chart) => {
+				afterDraw: ( chart ) => {
 					var ctx = chart.chart.ctx;
-					console.log(ctx);
+					console.log( ctx );
 				},
 			},
 		],
@@ -102,7 +97,7 @@ const LineChart = (props) => {
 	return (
 		<Main>
 			<Container>
-				<Chart data={data} options={options} />
+				<Chart data={ data } options={ options } />
 			</Container>
 		</Main>
 	);
